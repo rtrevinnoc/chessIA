@@ -1,9 +1,8 @@
 import chess, math, time
 
-# Define the maximum search depth
 MAX_DEPTH = 3
 
-
+# Calcular estructura de los peones, si estan solos
 def is_isolated_pawn(board, square):
     file = chess.square_file(square)
     adjacent_files = [file - 1, file + 1]
@@ -17,6 +16,7 @@ def is_isolated_pawn(board, square):
 
 piece_values = {chess.PAWN: 1, chess.KNIGHT: 3, chess.BISHOP: 3, chess.ROOK: 5, chess.QUEEN: 9, chess.KING: 0}
 
+# Calcular piezas restantes
 def material_advantage(board, color):
     score = 0
     for square in chess.SQUARES:
@@ -28,6 +28,7 @@ def material_advantage(board, color):
                 score -= piece_values[piece.piece_type]
     return score
 
+# Calcular valor del tablero mediante la estructura de los peones y el numero de piezas restantes
 def evaluate_board(board):
     material_advantage_score = (material_advantage(board, ia) - material_advantage(board, enemy))
 
@@ -42,7 +43,7 @@ def evaluate_board(board):
         + pawn_structure_advantage * 0.25
     )
 
-# Minimax function to search for the best move
+# Buscar mejor movimiento con Minimax de poda alfa-beta
 def minimax(board, depth, alpha, beta, maximizing_player):
     if depth == 0 or board.is_game_over():
         return evaluate_board(board)
@@ -69,7 +70,7 @@ def minimax(board, depth, alpha, beta, maximizing_player):
                 break
         return min_eval
 
-# Function to make the AI move
+# Generar un movimiento con Minimax
 def make_move(board):
     best_move = None
     best_eval = -math.inf
@@ -109,7 +110,6 @@ else:
     enemy = chess.WHITE
     ia = chess.BLACK
 
-# Play the game
 board = chess.Board()
 
 ia_moves = []
