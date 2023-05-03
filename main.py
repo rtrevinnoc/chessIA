@@ -4,13 +4,14 @@ MAX_DEPTH = 3
 
 # Calcular estructura de los peones, si estan solos
 def is_isolated_pawn(board, square):
+    color = board.piece_at(square).color
     file = chess.square_file(square)
     adjacent_files = [file - 1, file + 1]
     for adj_file in adjacent_files:
         if adj_file < 0 or adj_file > 7:
             continue
         adj_square = chess.square(adj_file, chess.square_rank(square))
-        if board.piece_at(adj_square) == chess.Piece(chess.PAWN, board.turn):
+        if board.piece_at(adj_square) == chess.Piece(chess.PAWN, color):
             return False
     return True
 
@@ -30,13 +31,13 @@ def material_advantage(board, color):
 
 # Calcular valor del tablero mediante la estructura de los peones y el numero de piezas restantes
 def evaluate_board(board):
-    material_advantage_score = (material_advantage(board, ia) - material_advantage(board, enemy))
+    material_advantage_score = material_advantage(board, ia)
 
-    white_pawns = board.pieces(chess.PAWN, chess.WHITE)
-    black_pawns = board.pieces(chess.PAWN, chess.BLACK)
-    white_pawn_structure = sum(1 for square in white_pawns if is_isolated_pawn(board, square))
-    black_pawn_structure = sum(1 for square in black_pawns if is_isolated_pawn(board, square))
-    pawn_structure_advantage = white_pawn_structure - black_pawn_structure
+    ia_pawns = board.pieces(chess.PAWN, ia)
+    enemy_pawns = board.pieces(chess.PAWN, enemy)
+    ia_pawn_structure = sum(1 for square in ia_pawns if is_isolated_pawn(board, square))
+    enemy_pawn_structure = sum(1 for square in enemy_pawns if is_isolated_pawn(board, square))
+    pawn_structure_advantage = ia_pawn_structure - enemy_pawn_structure
 
     return (
         material_advantage_score * 0.75
